@@ -1,0 +1,97 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@using StudentPortal.Models
+@using StudentPortal.Services
+@inject IStudentService studentService
+
+<h3>Student Table</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Image</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Email</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in studentService.GetStudents())
+        {
+        <tr>
+            <td scope="row">@student.Id</td>
+            @{ if (student.Image != null)
+                {
+                    <td>
+                        <img src=@student.Image class="avatar" alt="avatar">
+                    </td>
+                }
+                else
+                {
+                    <td class="w-25">
+                    </td>
+                }
+
+            }
+            <td>@student.Firstname</td>
+            <td>@student.Lastname</td>
+            <td>@student.Email</td>
+            <td><button @onclick="(e => onEditStudent(student))" data-toggle="modal" data-target="#editModal" class="btn btn-dark">Update</button></td>
+            <td><button type="button" class="btn btn-danger" onclick="StudentClass.DeleteStudent(@student.Id)">Delete</button></td>
+        </tr>
+
+        }
+    </tbody>
+</table>
+
+@if (SelectedStudent != null)
+{
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editStudent" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="studentName">Student Profile</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="/api/Students/UpdateStudent" enctype="multipart/form-data">
+
+                        <input type="text" id="firstName" maxlength="20" name="FirstName" placeholder="First Name" value="@SelectedStudent.Firstname" />
+                        <br />
+                        <input type="text" id="lastName" maxlength="20" name="LastName" placeholder="Last Name" value="@SelectedStudent.Lastname" />
+                        <br />
+                        <input type="email" id="email" maxlength="50" name="Email" placeholder="Email" value="@SelectedStudent.Email" />
+                        <input type="hidden" id="Id" name="Id" value="@SelectedStudent.Id" />
+                        <hr />
+                        <div>
+                            <input type="submit" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    Students SelectedStudent;
+
+    void onEditStudent(Students student)
+    {
+        SelectedStudent = student;
+    }
+
+    void onDeleteStudent(int id)
+    {
+        studentService.DeleteStudent(id);
+    }
+
+}
+

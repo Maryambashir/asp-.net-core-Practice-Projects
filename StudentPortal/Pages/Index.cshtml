@@ -1,0 +1,27 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Student Portal</h1>
+    <p>Add Student:</p>
+    <div>
+        <input type="text" id="FirstName" maxlength="20" name="FirstName" value="" placeholder="Enter First Name" />
+        <input type="text" id="LastName" maxlength="20" name="LastName" value="" placeholder="Enter Last Name" />
+        <input type="email" id="Email" maxlength="50" name="Email" value="" placeholder="Enter Email Address" />
+        Image:
+        <input type="file" id="StudentImg" name="img" accept="image/*">
+        <button type="button" class="btn btn-info" onclick="StudentClass.CreateStudentNew()">Add Student</button>
+    </div>
+        <hr />
+</div>
+@section Scripts{
+
+    <script src="~/js/CustomClass.js"></script>
+}
+
+@(await Html.RenderComponentAsync<StudentPortal.Components.StudentTable>(RenderMode.ServerPrerendered))
+
+<script src="_framework/blazor.server.js"></script>
